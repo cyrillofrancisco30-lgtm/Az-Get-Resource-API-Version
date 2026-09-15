@@ -1,3 +1,28 @@
+cat > XA-ZDR-EVIDENCE-BOUNDARY.md <<'EOF'
+# XA-ZDR Evidence Boundary
+
+**Status:** FROZEN  
+**Version:** XA-TRUST v2  
+**Decision:** NOT_PROMOTABLE
+
+## Fundamental distinction
+
+The following states are independent:
+
+```text
+ZDR\_DOCUMENTATION
+≠ ZDR\_CONFIGURATION
+≠ ZDR\_EXECUTION\_CONTEXT
+≠ ZDR\_TEST\_RESULT
+≠ ZDR\_CONTENT\_RETENTION\_EVIDENCE
+≠ ZDR\_CONTENT\_DELETION\_PROOF
+≠ CRYPTOGRAPHIC\_PROOF
+≠ INDEPENDENT\_VERIFICATION
+≠ CLAIM\_SCOPED\_VERIFIED
+≠ GLOBAL\_VERIFIED
+
+
+
 # Overview 
 
 This script retrieves the latest and current API versions of the Azure resources deployed in a specified Azure Subscription. 
