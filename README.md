@@ -56,4 +56,54 @@ The script generates the following output:
   ![Az Resource API Version](./Az_Resource_API_version.png)
   
   
-  
+  ☐ [1] POLICY ARTIFACT
+    ├─ policy_id resolvível
+    ├─ policy_commit resolvível
+    └─ versão normativa identificada
+
+☐ [2] INPUTS RESOLVED
+    ├─ E3 — Execution Observed
+    ├─ E4 — Result Observed
+    ├─ E5 — Integrity / Bindings
+    ├─ E6 — Independent Verification
+    └─ E7 — Verification Result
+
+☐ [3] POLICY EVALUATION OBSERVED
+    ├─ execução da avaliação normativa observada
+    ├─ inputs E3–E7 resolvidos
+    └─ predicados obrigatórios = TRUE
+
+☐ [4] PROMOTION DECISION ARTIFACT
+    ├─ decisão produzida pela avaliação
+    ├─ decision = VERIFIED
+    ├─ timestamp observado
+    └─ promotion_decision.json resolvível
+
+☐ [5] TRUST STATE LEDGER BINDING
+    ├─ state = VERIFIED
+    ├─ promotion_decision_ref resolvido
+    └─ binding do ledger verificável
+
+    E3 + E4 + E5 + E6 + E7
+          ↓
+   INPUTS RESOLVED
+          ↓
+OBSERVED POLICY EVALUATION
+          ↓
+  PROMOTION DECISION
+          ↓
+   LEDGER BINDING
+          ↓
+       VERIFIED
+
+
+       E7 = PASS
+      ≠
+Policy Evaluation = PASS
+      ≠
+Promotion Decision = VERIFIED
+      ≠
+Ledger State = VERIFIED
+
+
+
