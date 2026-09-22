@@ -74,3 +74,52 @@ MATCH
        │
        ▼
 E8
+
+README
+   ↛
+CONCRETE_WORKFLOW_RUN
+
+WORKFLOW_DEFINITION
+   ↛
+WORKFLOW_RUN
+
+WORKFLOW_RUN
+   ↛
+EVIDENCE_ARTIFACT
+
+EVIDENCE_ARTIFACT
+   ↛
+VERIFIED_E1–E7
+
+E7₁...E7ₙ
+   ↛
+E8
+
+
+"WORKFLOW_RUN possui run_id, status, logs..."
+
+DECLARED_GLOBAL
+      ≠
+RECALCULATED_GLOBAL
+
+Az-Get-Resource-API-Version
+          │
+          ▼
+      b0688b6
+          │
+          ▼
+DOCUMENTED EVIDENCE ARCHITECTURE
+          │
+          ├── Execution identity model
+          ├── Evidence artifact model
+          ├── E1–E7 promotion model
+          └── E8 independent reconstruction model
+
+
+          CONCRETE EXECUTION EVIDENCE
+          │
+          ▼
+VERIFIED E7
+          │
+          ▼
+VERIFIED E8
