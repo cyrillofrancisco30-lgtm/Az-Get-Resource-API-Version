@@ -264,6 +264,61 @@ E8
 └── VERIFIED_E8                    ?
 
 
+0-start.yml
+   │
+   │ configuração
+   ▼
+WORKFLOW DEFINITION
+   │
+   ▼
+CONCRETE RUN
+   │
+   ├── run_id
+   ├── run_attempt
+   ├── event
+   ├── head_sha
+   ├── created_at
+   ├── started_at
+   ├── completed_at
+   ├── status
+   └── conclusion
+   │
+   ▼
+JOB EXECUTION
+   │
+   ├── Checkout
+   ├── Create my-pages...
+   └── Update to step 1
+   │
+   ▼
+OBSERVED LOGS
+   │
+   ├── "Make a branch"
+   ├── "Create config..."
+   ├── "Make a commit"
+   ├── "Push"
+   └── "Make a pull request"
+   │
+   ▼
+OBSERVED REPOSITORY STATE
+   │
+   ├── branch
+   ├── commit SHA
+   ├── PR
+   ├── files
+   └── STEP
+   │
+   ▼
+BINDING
+   │
+   ├── RUN_ID
+   ├── HEAD_SHA
+   ├── RESULT_SHA
+   └── PR/COMMIT identity
+   │
+   ▼
+INDEPENDENT VERIFICATION
+
 
 
 Esta estrutura expandida organiza detalhadamente as variáveis de ambiente, contextos e comandos do sistema que definem a identidade completa de uma execução no GitHub Actions.
