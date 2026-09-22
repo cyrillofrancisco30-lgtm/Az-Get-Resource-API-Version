@@ -59,7 +59,815 @@ INDEPENDENT REPLAY
   ↓
 CLAIM-SCOPED VERIFIED
 
+[15/09, 19:03] Francisco: Sim — mas há uma correção fundamental no último trecho: “hash e prova Merkle → VERIFIED” não pode ser tratado como promoção automática.
 
+Para manter exatamente o mesmo rigor do modelo XAI/ZDR, o GitHub deve ficar assim:
+
+FROZEN — GITHUB WORKFLOW EXECUTION EVIDENCE
+
+workflow_run
+types: [completed]
+│
+▼
+WORKFLOW_RUN_EVENT
+│
+▼
+event.workflow_run.id
+│
+▼
+EXACT RUN RESOLUTION
+│
+▼
+RUN IDENTITY VALIDATION
+│
+├── repository
+├── workflow name
+├── workflow path
+├── run_id
+├── run_attempt
+├── head_sha
+└── status = completed
+│
+▼
+E3 — EXECUTION_EVENT_EVIDENCE
+│
+├── workflow execution identity
+├── temporal context
+├── repository binding
+├── workflow binding
+└── run binding
+│
+▼
+JOBS / ARTIFACTS
+│
+▼
+E4 — TEST / RESULT EVIDENCE
+│
+▼
+ARTIFACT INTEGRITY / BINDING
+│
+▼
+E5 — CRYPTOGRAPHIC_BINDING
+│
+▼
+E6 — INDEPENDENT_VERIFICATION
+│
+▼
+E7 — CLAIM-SCOPED VERIFICATION
+│
+▼
+PROMOTION POLICY
+│
+▼
+VERIFIED
+
+O ponto crítico
+
+A cadeia:
+
+workflow_run.completed
+↓
+hash
+↓
+Merkle
+↓
+VERIFIED
+
+é inválida como regra de promoção.
+
+Hash e Merkle demonstram propriedades de integridade/binding do artefato quando corretamente aplicados. Eles não demonstram, sozinhos:
+
+TEST_PASSED
+CLAIM_CONFORMANCE
+SEMANTIC_CORRECTNESS
+INDEPENDENT_VERIFICATION
+CLAIM_TRUTH
+
+Portanto:
+
+WORKFLOW_RUN_COMPLETED
+↛
+TEST_PASSED
+
+WORKFLOW_CONCLUSION_SUCCESS
+↛
+CLAIM_CONFORMANCE
+
+ARTIFACT_RETRIEVED
+↛
+ARTIFACT_TRUST
+
+HASH_VALID
+↛
+SEMANTIC_CORRECTNESS
+
+MERKLE_VALID
+↛
+CLAIM_TRUTH
+
+E5_CRYPTOGRAPHIC_BINDING
+↛
+E7_VERIFIED
+
+E3 fica objetivamente bem definido
+
+No seu desenho, o trecho mais forte é:
+
+workflow_run.completed
+↓
+event.workflow_run.id
+↓
+GET /actions/runs/{same_id}
+↓
+eventRun.id === apiRun.id
+
+Isso permite estabelecer uma relação muito específica:
+
+CLAIM:
+"The evidence collector observed the completion
+of workflow run RUN-X."
+
+com binding para:
+
+repository
+workflow
+run_id
+run_attempt
+head_sha
+status
+temporal context
+[15/09, 19:03] Francisco: Sim — mas há uma correção fundamental no último trecho: “hash e prova Merkle → VERIFIED” não pode ser tratado como promoção automática.
+
+Para manter exatamente o mesmo rigor do modelo XAI/ZDR, o GitHub deve ficar assim:
+
+FROZEN — GITHUB WORKFLOW EXECUTION EVIDENCE
+
+workflow_run
+types: [completed]
+│
+▼
+WORKFLOW_RUN_EVENT
+│
+▼
+event.workflow_run.id
+│
+▼
+EXACT RUN RESOLUTION
+│
+▼
+RUN IDENTITY VALIDATION
+│
+├── repository
+├── workflow name
+├── workflow path
+├── run_id
+├── run_attempt
+├── head_sha
+└── status = completed
+│
+▼
+E3 — EXECUTION_EVENT_EVIDENCE
+│
+├── workflow execution identity
+├── temporal context
+├── repository binding
+├── workflow binding
+└── run binding
+│
+▼
+JOBS / ARTIFACTS
+│
+▼
+E4 — TEST / RESULT EVIDENCE
+│
+▼
+ARTIFACT INTEGRITY / BINDING
+│
+▼
+E5 — CRYPTOGRAPHIC_BINDING
+│
+▼
+E6 — INDEPENDENT_VERIFICATION
+│
+▼
+E7 — CLAIM-SCOPED VERIFICATION
+│
+▼
+PROMOTION POLICY
+│
+▼
+VERIFIED
+
+O ponto crítico
+
+A cadeia:
+
+workflow_run.completed
+↓
+hash
+↓
+Merkle
+↓
+VERIFIED
+
+é inválida como regra de promoção.
+
+Hash e Merkle demonstram propriedades de integridade/binding do artefato quando corretamente aplicados. Eles não demonstram, sozinhos:
+
+TEST_PASSED
+CLAIM_CONFORMANCE
+SEMANTIC_CORRECTNESS
+INDEPENDENT_VERIFICATION
+CLAIM_TRUTH
+
+Portanto:
+
+WORKFLOW_RUN_COMPLETED
+↛
+TEST_PASSED
+
+WORKFLOW_CONCLUSION_SUCCESS
+↛
+CLAIM_CONFORMANCE
+
+ARTIFACT_RETRIEVED
+↛
+ARTIFACT_TRUST
+
+HASH_VALID
+↛
+SEMANTIC_CORRECTNESS
+
+MERKLE_VALID
+↛
+CLAIM_TRUTH
+
+E5_CRYPTOGRAPHIC_BINDING
+↛
+E7_VERIFIED
+
+E3 fica objetivamente bem definido
+
+No seu desenho, o trecho mais forte é:
+
+workflow_run.completed
+↓
+event.workflow_run.id
+↓
+GET /actions/runs/{same_id}
+↓
+eventRun.id === apiRun.id
+
+Isso permite estabelecer uma relação muito específica:
+
+CLAIM:
+"The evidence collector observed the completion
+of workflow run RUN-X."
+
+com binding para:
+
+repository
+workflow
+run_id
+run_attempt
+head_sha
+status
+temporal context
+
+A validação:
+
+if (Number(eventRun.id) !== run.id) {
+throw new Error("WORKFLOW_RUN_ID_MISMATCH");
+}
+
+é particularmente importante porque fecha a possibilidade de event/run substitution.
+
+E4 continua separado
+
+Se o CI produziu, por exemplo:
+
+TEST_RESULT:
+RFC8785_CONFORMANCE = PASS
+
+isso precisa ser obtido do resultado concreto do workflow/artifact e validado semanticamente.
+
+Então:
+
+E3
+WORKFLOW RUN OCCURRED
++
+E4
+TEST RESULT OBSERVED
+
+são duas afirmações diferentes.
+
+Mesmo:
+
+conclusion = success
+
+não deve ser convertido automaticamente em:
+
+RFC8785_CONFORMANCE = PASS
+
+porque success é uma propriedade do workflow/run, enquanto conformance é uma propriedade do claim/test específico.
+
+E5
+
+Depois:
+
+bundle.json
+verification.json
+signature.json
+
+podem receber:
+
+canonicalization
+hash
+Merkle root
+signature
+key_id
+key registry binding
+
+Isso cria:
+
+E5 — CRYPTOGRAPHIC_BINDING_EVIDENCE
+
+Mas E5 continua sendo E5.
+
+E6
+
+O passo que realmente fecha a fronteira é:
+
+E5
+│
+▼
+independent verifier
+│
+├── signature valid
+├── hash valid
+├── Merkle valid
+├── artifact binding valid
+├── provenance valid
+└── claim/test semantics validated
+│
+▼
+E6
+
+E7
+
+Só então:
+
+E6
+│
+▼
+Promotion Policy
+│
+▼
+E7 — VERIFIED(CLAIM-X)
+
+E sempre:
+
+VERIFIED(CLAIM-X)
+↛
+VERIFIED(CLAIM-Y)
+
+VERIFIED(CLAIM-X)
+↛
+GLOBAL_VERIFIED
+
+Portanto, a frase final deve ser ajustada
+
+Em vez de:
+
+> Execução comprovado
+
+
+
+eu usaria:
+
+WORKFLOW EXECUTION OBSERVED AND IDENTITY-BOUND
+
+ou, no vocabulário XA-TRUST:
+
+E3 — EXECUTION_EVENT_EVIDENCE
+STATUS = VERIFIED
+SCOPE = SPECIFIC_WORKFLOW_RUN
+
+somente se a evidência E3 tiver sido independentemente validada.
+
+E, para o claim completo:
+
+E3 EXECUTION
++
+E4 RESULT
++
+E5 CRYPTOGRAPHIC BINDING
++
+E6 INDEPENDENT VERIFICATION
++
+PROMOTION POLICY
+↓
+E7 CLAIM-SCOPED VERIFIED
+
+Essa formulação mantém o GitHub exatamente na mesma arquitetura epistemológica que você acabou de estabelecer para o xAI ZDR: o mecanismo de observabilidade é real, o evento concreto pode ser capturado, o resultado pode ser testado, a integridade pode ser demonstrada e somente então o claim específico pode ser promovido.
+[15/09, 19:25] Francisco: FROZEN — XA-TRUST VERIFICATION GOLDEN RULE
+
+IDENTITY
+≠
+INTEGRITY
+≠
+SEMANTIC TRUTH
+
+E3 — EXECUTION IDENTITY
++
+E4 — OBSERVED RESULT
++
+E5 — INTEGRITY / CRYPTOGRAPHIC BINDING
++
+E6 — INDEPENDENT VERIFICATION
++
+APPLICABLE PROMOTION POLICY
+↓
+E7 — CLAIM-SCOPED VERIFIED
+[15/09, 19:28] Francisco: Sim. Como formulação final, eu faria apenas uma correção matemática de linguagem: o + representa conjunção cumulativa de requisitos, não uma soma numérica. Isso evita a interpretação de que evidências poderiam “compensar” umas às outras.
+
+A forma canônica fica:
+
+FROZEN — XA-TRUST GOLDEN RULE OF VERIFICATION
+
+IDENTITY
+≠
+INTEGRITY
+≠
+SEMANTIC TRUTH
+
+E7 — CLAIM-SCOPED VERIFIED
+
+iff
+
+E3_EXECUTION_IDENTITY
+∧ E4_RESULT_EVIDENCE
+∧ E5_BINDING_INTEGRITY
+∧ E6_INDEPENDENT_VERIFICATION
+∧ APPLICABLE_PROMOTION_POLICY
+
+Com:
+
+E3 ∧ E4 ∧ E5 ∧ E6 ∧ POLICY
+↓
+E7
+
+e não:
+
+E3 + E5
+↓
+E7
+
+Axiomas de não-compensação
+
+E3_PRESENT ∧ E4_MISSING
+→ NO_PROMOTION
+
+E4_PRESENT ∧ E5_INVALID
+→ NO_PROMOTION
+
+E5_VALID ∧ E6_MISSING
+→ NO_PROMOTION
+
+E6_VALID ∧ POLICY_NOT_SATISFIED
+→ NO_PROMOTION
+
+Nenhuma evidência possui poder compensatório sobre uma condição obrigatória ausente.
+
+E a segunda proteção permanece:
+
+VERIFIED(CLAIM-X, SCOPE-X)
+↛
+VERIFIED(CLAIM-Y, SCOPE-Y)
+
+VERIFIED(CLAIM-X, SCOPE-X)
+↛
+GLOBAL_VERIFIED
+
+Portanto, o estado:
+
+E7 = VERIFIED
+
+significa precisamente:
+
+> Este claim específico satisfaz os requisitos de evidência, binding, integridade, verificação independente e política de promoção definidos para este escopo.
+
+
+
+Não significa que o sistema inteiro seja verdadeiro, seguro ou globalmente verificado.
+
+E o princípio epistemológico central pode ser congelado em uma única linha:
+
+VALIDITY OF THE EVIDENCE
+≠
+VALIDITY OF THE CLAIM
+
+A primeira é uma propriedade da cadeia de evidência.
+A segunda é uma conclusão claim-scoped, condicionada à verificação semântica aplicável.
+
+XA-TRUST — Golden Rule: FROZEN.
+[16/09, 02:22] Francisco: import os
+
+from xai_sdk import Client
+from xai_sdk.chat import user
+from xai_sdk.tools import web_search, x_search
+client = Client(api_key=os.getenv("XAI_API_KEY"))
+
+First turn.
+
+chat = client.chat.create(
+model="grok-4.6",  # reasoning model
+tools=[web_search(), x_search()],
+use_encrypted_content=True,
+)
+chat.append(user("What is xAI?"))
+print("\n\n##### First turn #####\n")
+for response, chunk in chat.stream():
+print(chunk.content, end="", flush=True)
+print("\n\nUsage for first turn:", response.server_side_tool_usage)
+
+chat.append(response)
+
+print("\n\n##### Second turn #####\n")
+chat.append(user("What is its latest mission?"))
+
+Second turn.
+
+for response, chunk in chat.stream():
+print(chunk.content, end="", flush=True)
+print("\n\nUsage for second turn:", response.server_side_tool_usage)
+A validação:
+
+if (Number(eventRun.id) !== run.id) {
+throw new Error("WORKFLOW_RUN_ID_MISMATCH");
+}
+
+é particularmente importante porque fecha a possibilidade de event/run substitution.
+
+E4 continua separado
+
+Se o CI produziu, por exemplo:
+
+TEST_RESULT:
+RFC8785_CONFORMANCE = PASS
+
+isso precisa ser obtido do resultado concreto do workflow/artifact e validado semanticamente.
+
+Então:
+
+E3
+WORKFLOW RUN OCCURRED
++
+E4
+TEST RESULT OBSERVED
+
+são duas afirmações diferentes.
+
+Mesmo:
+
+conclusion = success
+
+não deve ser convertido automaticamente em:
+
+RFC8785_CONFORMANCE = PASS
+
+porque success é uma propriedade do workflow/run, enquanto conformance é uma propriedade do claim/test específico.
+
+E5
+
+Depois:
+
+bundle.json
+verification.json
+signature.json
+
+podem receber:
+
+canonicalization
+hash
+Merkle root
+signature
+key_id
+key registry binding
+
+Isso cria:
+
+E5 — CRYPTOGRAPHIC_BINDING_EVIDENCE
+
+Mas E5 continua sendo E5.
+
+E6
+
+O passo que realmente fecha a fronteira é:
+
+E5
+│
+▼
+independent verifier
+│
+├── signature valid
+├── hash valid
+├── Merkle valid
+├── artifact binding valid
+├── provenance valid
+└── claim/test semantics validated
+│
+▼
+E6
+
+E7
+
+Só então:
+
+E6
+│
+▼
+Promotion Policy
+│
+▼
+E7 — VERIFIED(CLAIM-X)
+
+E sempre:
+
+VERIFIED(CLAIM-X)
+↛
+VERIFIED(CLAIM-Y)
+
+VERIFIED(CLAIM-X)
+↛
+GLOBAL_VERIFIED
+
+Portanto, a frase final deve ser ajustada
+
+Em vez de:
+
+> Execução comprovado
+
+
+
+eu usaria:
+
+WORKFLOW EXECUTION OBSERVED AND IDENTITY-BOUND
+
+ou, no vocabulário XA-TRUST:
+
+E3 — EXECUTION_EVENT_EVIDENCE
+STATUS = VERIFIED
+SCOPE = SPECIFIC_WORKFLOW_RUN
+
+somente se a evidência E3 tiver sido independentemente validada.
+
+E, para o claim completo:
+
+E3 EXECUTION
++
+E4 RESULT
++
+E5 CRYPTOGRAPHIC BINDING
++
+E6 INDEPENDENT VERIFICATION
++
+PROMOTION POLICY
+↓
+E7 CLAIM-SCOPED VERIFIED
+
+Essa formulação mantém o GitHub exatamente na mesma arquitetura epistemológica que você acabou de estabelecer para o xAI ZDR: o mecanismo de observabilidade é real, o evento concreto pode ser capturado, o resultado pode ser testado, a integridade pode ser demonstrada e somente então o claim específico pode ser promovido.
+[15/09, 19:25] Francisco: FROZEN — XA-TRUST VERIFICATION GOLDEN RULE
+
+IDENTITY
+≠
+INTEGRITY
+≠
+SEMANTIC TRUTH
+
+E3 — EXECUTION IDENTITY
++
+E4 — OBSERVED RESULT
++
+E5 — INTEGRITY / CRYPTOGRAPHIC BINDING
++
+E6 — INDEPENDENT VERIFICATION
++
+APPLICABLE PROMOTION POLICY
+↓
+E7 — CLAIM-SCOPED VERIFIED
+[15/09, 19:28] Francisco: Sim. Como formulação final, eu faria apenas uma correção matemática de linguagem: o + representa conjunção cumulativa de requisitos, não uma soma numérica. Isso evita a interpretação de que evidências poderiam “compensar” umas às outras.
+
+A forma canônica fica:
+
+FROZEN — XA-TRUST GOLDEN RULE OF VERIFICATION
+
+IDENTITY
+≠
+INTEGRITY
+≠
+SEMANTIC TRUTH
+
+E7 — CLAIM-SCOPED VERIFIED
+
+iff
+
+E3_EXECUTION_IDENTITY
+∧ E4_RESULT_EVIDENCE
+∧ E5_BINDING_INTEGRITY
+∧ E6_INDEPENDENT_VERIFICATION
+∧ APPLICABLE_PROMOTION_POLICY
+
+Com:
+
+E3 ∧ E4 ∧ E5 ∧ E6 ∧ POLICY
+↓
+E7
+
+e não:
+
+E3 + E5
+↓
+E7
+
+Axiomas de não-compensação
+
+E3_PRESENT ∧ E4_MISSING
+→ NO_PROMOTION
+
+E4_PRESENT ∧ E5_INVALID
+→ NO_PROMOTION
+
+E5_VALID ∧ E6_MISSING
+→ NO_PROMOTION
+
+E6_VALID ∧ POLICY_NOT_SATISFIED
+→ NO_PROMOTION
+
+Nenhuma evidência possui poder compensatório sobre uma condição obrigatória ausente.
+
+E a segunda proteção permanece:
+
+VERIFIED(CLAIM-X, SCOPE-X)
+↛
+VERIFIED(CLAIM-Y, SCOPE-Y)
+
+VERIFIED(CLAIM-X, SCOPE-X)
+↛
+GLOBAL_VERIFIED
+
+Portanto, o estado:
+
+E7 = VERIFIED
+
+significa precisamente:
+
+> Este claim específico satisfaz os requisitos de evidência, binding, integridade, verificação independente e política de promoção definidos para este escopo.
+
+
+
+Não significa que o sistema inteiro seja verdadeiro, seguro ou globalmente verificado.
+
+E o princípio epistemológico central pode ser congelado em uma única linha:
+
+VALIDITY OF THE EVIDENCE
+≠
+VALIDITY OF THE CLAIM
+
+A primeira é uma propriedade da cadeia de evidência.
+A segunda é uma conclusão claim-scoped, condicionada à verificação semântica aplicável.
+
+XA-TRUST — Golden Rule: FROZEN.
+[16/09, 02:22] Francisco: import os
+
+from xai_sdk import Client
+from xai_sdk.chat import user
+from xai_sdk.tools import web_search, x_search
+client = Client(api_key=os.getenv("XAI_API_KEY"))
+
+First turn.
+
+chat = client.chat.create(
+model="grok-4.6",  # reasoning model
+tools=[web_search(), x_search()],
+use_encrypted_content=True,
+)
+chat.append(user("What is xAI?"))
+print("\n\n##### First turn #####\n")
+for response, chunk in chat.stream():
+print(chunk.content, end="", flush=True)
+print("\n\nUsage for first turn:", response.server_side_tool_usage)
+
+chat.append(response)
+
+print("\n\n##### Second turn #####\n")
+chat.append(user("What is its latest mission?"))
+
+Second turn.
+
+for response, chunk in chat.stream():
+print(chunk.content, end="", flush=True)
+print("\n\nUsage for second turn:", response.server_side_tool_usage)
 
 
  
