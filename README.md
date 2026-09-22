@@ -1,5 +1,68 @@
 
+WORKFLOW: "Step 0, Start"
+        │
+        ├── TRIGGER
+        │     ├── workflow_dispatch
+        │     └── push → main
+        │
+        ├── PERMISSIONS
+        │     ├── contents: write
+        │     └── pull-requests: write
+        │
+        ├── JOB
+        │     └── on_start
+        │           ├── if: !repository.is_template
+        │           └── ubuntu-latest
+        │
+        ├── STEPS
+        │     ├── Checkout
+        │     ├── Create branch / files / commit / push
+        │     ├── Create Pull Request
+        │     └── Update step 0 → 1
+        │
+        └── EXECUTION
+              └── NOT ESTABLISHED BY YAML ALONE
 
+
+
+              YAML
+ │
+ ▼
+WORKFLOW DEFINITION
+ │
+ ▼
+TRIGGER CONFIGURATION
+ │
+ X
+ └────↛ CONCRETE RUN
+
+
+
+
+RUN_ID
+  ↓
+RUN_ATTEMPT
+  ↓
+GITHUB_SHA
+  ↓
+CONCRETE EXECUTION
+  ↓
+JOB / STEP LOGS
+  ↓
+OBSERVED RESULT
+  ↓
+RESULT ARTIFACT
+  ↓
+EXECUTION–RESULT BINDING
+  ↓
+INDEPENDENT REPLAY
+  ↓
+CLAIM-SCOPED VERIFIED
+
+
+
+
+ 
 UPSTREAM / DERIVED IMPLEMENTATION
               │
               ▼
