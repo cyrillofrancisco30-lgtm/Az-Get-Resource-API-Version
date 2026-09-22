@@ -145,3 +145,57 @@ CONCRETE_EVIDENCE_ARTIFACT
 VERIFIED_E7
    ↛
 VERIFIED_E8
+
+
+WORKFLOW_RUN
+├── run_id              ← valor concreto
+├── run_attempt         ← valor concreto
+├── head_sha            ← commit executado
+├── status              ← observado
+├── conclusion          ← observado
+├── started_at
+├── completed_at
+└── logs
+        │
+        ▼
+EVIDENCE_ARTIFACT
+├── artifact identity
+├── digest
+├── provenance
+└── verification data
+
+E1–E7
+   │
+   ▼
+LOCAL VERIFIED CLAIMS
+   │
+   ▼
+DECLARED_GLOBAL
+   │
+   ▼
+INDEPENDENT RECONSTRUCTION
+   │
+   ▼
+RECALCULATED_GLOBAL
+   │
+   ▼
+EXACT MATCH + SCOPE/COMPLETENESS
+   │
+   ▼
+E8
+
+
+1491da4
+│
+├── ARTIFACT_IDENTITY              ✓
+├── DOCUMENTED_EXECUTION_MODEL    ✓
+├── DOCUMENTED_EVIDENCE_MODEL     ✓
+├── DOCUMENTED_E1–E7              ✓
+├── DOCUMENTED_E8                 ✓
+├── DOCUMENTED_NON-DERIVABILITY   ✓
+│
+├── CONCRETE_EXECUTION            ?
+├── CONCRETE_RESULT               ?
+├── VERIFIED_BINDING               ?
+├── VERIFIED_E7                    ?
+└── VERIFIED_E8                    ?
