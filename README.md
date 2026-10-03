@@ -1,4 +1,89 @@
-FROZEN — XA-TRUST GITHUB WORKFLOW EXECUTION MODEL
+README.md
+│
+├── DOCUMENTED XA-TRUST EXECUTION MODEL
+│   ├── E3 — EXECUTION IDENTITY
+│   ├── E4 — OBSERVED RESULT
+│   ├── E5 — BINDING / INTEGRITY
+│   ├── E6 — INDEPENDENT VERIFICATION
+│   ├── E7 — CLAIM-SCOPED VERIFIED
+│   └── E8 — GLOBAL VERIFICATION
+│
+└── DOES NOT ITSELF ESTABLISH
+    ├── CONCRETE WORKFLOW RUN
+    ├── CONCRETE EXECUTION RESULT
+    ├── VERIFIED BINDING
+    ├── E7
+    └── E8
+
+    FROZEN — XA-TRUST GITHUB WORKFLOW EXECUTION MODEL
+
+WORKFLOW DEFINITION
+        ↓
+TRIGGER CONFIGURATION
+        ↓
+TRIGGER EVENT
+        ↓
+event.workflow_run.id
+        ↓
+EXACT RUN RESOLUTION
+        ↓
+GET /actions/runs/{RUN_ID}
+        ↓
+run.id === event.workflow_run.id
+        ↓
+RUN IDENTITY VALID
+        ↓
+E3 — EXECUTION_EVENT_EVIDENCE
+        ├── repository
+        ├── workflow
+        ├── workflow_path
+        ├── run_id
+        ├── run_attempt
+        ├── head_sha
+        ├── event
+        ├── temporal context
+        ├── status
+        └── conclusion
+        ↓
+JOB / STEP EXECUTION
+        ↓
+E4 — OBSERVED RESULT EVIDENCE
+        ↓
+E5 — BINDING / INTEGRITY
+        ↓
+E6 — INDEPENDENT VERIFICATION
+        ↓
+APPLICABLE PROMOTION POLICY
+        ↓
+E7 — CLAIM-SCOPED VERIFIED
+
+
+
+README ⇏ CONCRETE_WORKFLOW_RUN
+
+WORKFLOW_DEFINITION ⇏ WORKFLOW_RUN
+
+COMMIT_MESSAGE ⇏ EXECUTION_VERIFIED
+
+WORKFLOW_RUN_COMPLETED ⇏ TEST_PASSED
+
+WORKFLOW_CONCLUSION_SUCCESS ⇏ CLAIM_CONFORMANCE
+
+WORKFLOW_SUCCESS ⇏ CONCRETE_API_EXECUTION
+
+HASH_VALID ⇏ SEMANTIC_CORRECTNESS
+
+MERKLE_VALID ⇏ CLAIM_TRUTH
+
+E5 ⇏ E7
+
+E7(CLAIM-X, SCOPE-X) ⇏ E7(CLAIM-Y, SCOPE-Y)
+
+E7 ⇏ GLOBAL_VERIFIED
+
+
+
+    FROZEN — XA-TRUST GITHUB WORKFLOW EXECUTION MODEL
 
 gh workflow run <workflow-file>.ymlWORKFLOW DEFINITION
         │
