@@ -1,6 +1,6 @@
 FROZEN — XA-TRUST GITHUB WORKFLOW EXECUTION MODEL
 
-WORKFLOW DEFINITION
+gh workflow run <workflow-file>.ymlWORKFLOW DEFINITION
         │
         ▼
 TRIGGER CONFIGURATION
@@ -55,6 +55,40 @@ APPLICABLE PROMOTION POLICY
         │
         ▼
 E7 — CLAIM-SCOPED VERIFIED
+
+gh run list --limit 5
+
+
+RUN_ID
+  ↓
+GET /actions/runs/{RUN_ID}
+  ↓
+run.id === RUN_ID
+  ↓
+E3 — EXECUTION IDENTITY
+  ↓
+GET /actions/runs/{RUN_ID}/jobs
+  ↓
+JOB_ID
+  ↓
+STEP_ID
+  ↓
+gh run view {RUN_ID} --log
+  ↓
+COMMAND_INVOCATION_OBSERVED
+  ↓
+API_REQUEST_OBSERVED
+  ↓
+HTTP_RESPONSE_OBSERVED
+  ↓
+SAME_EXECUTION_BINDING
+  ↓
+RESULT_OBSERVATION_VALID
+  ↓
+E4 — OBSERVED API RESULT
+
+[ Disparar workflow ]
+
 
 TRIGGER
   ≠
