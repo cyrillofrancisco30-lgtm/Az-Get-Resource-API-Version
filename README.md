@@ -179,8 +179,117 @@ WORKFLOW: "Step 0, Start"
         └── EXECUTION
               └── NOT ESTABLISHED BY YAML ALONE
 
+COMMIT 8455fba
+        ↓
+README.md
+        ↓
+DOCUMENTED XA-TRUST EXECUTION MODEL
 
 
+
+E3 — EXECUTION IDENTITY
+E4 — OBSERVED RESULT
+E5 — BINDING / INTEGRITY
+E6 — INDEPENDENT VERIFICATION
+E7 — CLAIM-SCOPED VERIFIED
+E8 — GLOBAL VERIFICATION
+
+
+README
+⇏
+CONCRETE WORKFLOW RUN
+
+
+COMMIT MESSAGE = "Evidence Execution Verification"
+⇏
+EXECUTION VERIFIED
+
+
+COMMIT
+8455fba
+   │
+   │ head_sha
+   ▼
+WORKFLOW RUN
+   │
+   ├── run_id
+   ├── run_attempt
+   ├── workflow_id
+   ├── event
+   ├── status
+   ├── conclusion
+   ├── created_at
+   ├── run_started_at
+   └── head_sha = 8455fba
+
+   run.head_sha === 8455fba
+
+
+   gh run list --limit 10
+
+
+   gh api repos/cyrillofrancisco30-lgtm/Az-Get-Resource-API-Version/actions/runs/<RUN_ID>
+
+   
+gh api repos/cyrillofrancisco30-lgtm/Az-Get-Resource-API-Version/actions/runs/<RUN_ID>/jobs
+
+
+gh run view <RUN_ID> --log
+
+
+RUN_ID
+∧ RUN_ATTEMPT
+∧ REPOSITORY
+∧ WORKFLOW
+∧ HEAD_SHA
+∧ EVENT
+∧ TEMPORAL_CONTEXT
+∧ STATUS
+
+
+API_RUN.id === RUN_ID
+
+API_RUN.head_sha === 8455fba
+
+E3_EXECUTION_IDENTITY = ESTABLISHED
+
+RUN_ID
+   ↓
+JOB_ID
+   ↓
+STEP_ID
+   ↓
+COMMAND_INVOCATION_OBSERVED
+   ↓
+REQUEST_OBSERVED
+   ↓
+RESPONSE_OBSERVED
+   ↓
+SAME_EXECUTION_BINDING
+   ↓
+RESULT_OBSERVATION_VALID
+   ↓
+E4
+
+
+E3 ∧ E4
+   ↓
+E5
+   ↓
+E6
+   ↓
+PROMOTION POLICY
+   ↓
+E7
+
+
+WORKFLOW EXECUTION OBSERVED AND IDENTITY-BOUND
+
+
+
+EXECUTION VERIFIED
+
+[disparar workflow]
               YAML
  │
  ▼
