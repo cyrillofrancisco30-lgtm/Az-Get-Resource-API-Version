@@ -1341,278 +1341,193 @@ ACTUAL WORKFLOW EXECUTION
         ↓
 OBSERVED EXECUTION CONTEXT
 
-A partir daqui, o próximo pedaço crítico do log é o que mostra os comandos efetivamente executados e seus exit codes/resultados, e depois a conclusão do job/run. É aí que começamos a construir RESULT_EVIDENCE, em vez de apenas EXECUTION_EVENT_EVIDENCE.
-[18/09, 17:17] Francisco: Sim. Este terceiro bloco permite refinar ainda mais a classificação. Ele é essencialmente o manifesto técnico da imagem de runner ubuntu-24.04 que aparece no log da execução.
 
-A relação entre os dois artefatos é forte:
 
-RUN LOG
-Image: ubuntu-24.04
-Version: 20260720.247.2
-        │
-        │ corresponde a
-        ▼
-RUNNER IMAGE MANIFEST
-Ubuntu 24.04
-Version: 20260720.247.2
-        │
-        ▼
-AMBIENTE DISPONÍVEL NO RUNNER
+FROZEN — XA-TRUST WORKFLOW EXECUTION SEPARATION
 
-O que isso demonstra
-
-O manifesto fornece uma identidade detalhada do ambiente:
-
-IMAGE_IDENTITY
-├── ubuntu-24.04
-├── OS 24.04.4 LTS
-├── kernel 6.17.0-1020-azure
-├── image 20260720.247.2
-└── systemd 255.4-1ubuntu8.16
-
-E também fornece o inventário de software disponível:
-
-Python 3.12.3
-Node.js 22.23.1
-Docker 28.0.4
-Git 2.54.0
-Kubectl 1.36.2
-Terraform [se presente no manifesto completo]
-AWS CLI 2.36.2
-Azure CLI 2.88.0
-GitHub CLI 2.96.0
-...
-
-Portanto, podemos afirmar:
-
-> O runner utilizado naquele contexto de execução foi associado à imagem ubuntu-24.04, versão 20260720.247.2, cujo manifesto documenta o ambiente e o software disponibilizado pela imagem.
+ACTOR / TRIGGER
+        ↓
+TRIGGER EVENT
+        ↓
+WORKFLOW RUN
+        ↓
+EXECUTION IDENTITY
+        ↓
+E3 — EXECUTION EVENT EVIDENCE
+        ↓
+E4 — OBSERVED RESULT EVIDENCE
+        ↓
+E5 — BINDING / INTEGRITY
+        ↓
+E6 — INDEPENDENT VERIFICATION
+        ↓
+E7 — CLAIM-SCOPED VERIFIED
 
 
 
-Isso é uma evidência muito melhor do que simplesmente dizer “GitHub possui Ubuntu runners”.
-
-
----
-
-Mas existe uma fronteira crítica
-
-Por exemplo, o manifesto diz:
-
-Docker Client 28.0.4
-Docker Server 28.0.4
-
-Isso significa:
-
-DOCKER_AVAILABLE_IN_RUNNER = TRUE
-
-Não significa:
-
-DOCKER_EXECUTED = TRUE
-
-Da mesma forma:
-
-AWS CLI 2.36.2
-
-não significa que:
-
-aws command
-
-foi executado.
-
-E:
-
-Python 3.12.3
-
-não significa que:
-
-python build_dep.py
-
-foi executado.
-
-A separação fica:
-
-IMAGE_MANIFEST
-      │
-      └── SOFTWARE_AVAILABLE
-               │
-               X
-               │
-               ▼
-       SOFTWARE_EXECUTED
-               │
-               ▼
-          COMMAND_RESULT
-               │
-               ▼
-        VERIFIED RESULT
-
-
----
-
-Isso é particularmente importante para o XA-TRUST
-
-Você agora possui três camadas distintas de evidência:
-
-E1 — definição
-
-.github/workflows/...
-
-WORKFLOW_DEFINITION
-
-E3 — execução
-
-Seu log:
-
-2026-08-04T10:18:38...
-Current runner version: 2.336.0
-...
-repository: cyrillofrancisco30-lgtm/Xa-Finance-AI-
-GITHUB_SHA: 4dd79f...
-...
-Run actions/checkout@v4
-
-EXECUTION_EVENT_EVIDENCE
-
-Ambiente da execução
-
-Manifesto:
-
-ubuntu-24.04
-20260720.247.2
-24.04.4 LTS
-6.17.0-1020-azure
-
-EXECUTION_ENVIRONMENT_EVIDENCE
-
-Isso permite representar:
-
+TRIGGER_ACTOR
+        ≠
+WORKFLOW_RUN
+        ≠
+CONCRETE_EXECUTION
+        ≠
+OBSERVED_RESULT
+        ≠
+VERIFICATION
+        ≠
 CLAIM
- │
- ├── WORKFLOW_DEFINITION
- │
- ├── EXECUTION_EVENT
- │      ├── timestamp
- │      ├── repository
- │      ├── source_sha
- │      ├── job
- │      └── executed action
- │
- └── EXECUTION_ENVIRONMENT
-        ├── runner
-        ├── OS
-        ├── kernel
-        ├── image
-        └── image version
-
-E o detalhe mais forte
-
-O log contém:
-
-GITHUB_SHA = 4dd79f238a960aded7c15c65c960e1d7e0559941
-
-enquanto o manifesto contém:
-
-Image Version = 20260720.247.2
-
-e o próprio log confirma:
-
-Runner Image
-Image: ubuntu-24.04
-Version: 20260720.247.2
-
-Então há uma correspondência observável entre o ambiente declarado pela imagem e o ambiente registrado no run.
 
 
----
 
-O que ainda falta para RESULT
+cyrillofrancisco30-lgtm
+        ⇏
+WORKFLOW_SUCCESS
 
-Para sair de:
+WORKFLOW_TRIGGERED
+        ⇏
+WORKFLOW_SUCCESS
 
-EXECUTION_DEMONSTRATED
+WORKFLOW_SUCCESS
+        ⇏
+TEST_PASSED
 
-e entrar em:
+WORKFLOW_SUCCESS
+        ⇏
+DEPLOYMENT_SUCCEEDED
 
-RESULT_EVIDENCE
+WORKFLOW_SUCCESS
+        ⇏
+CONCRETE_API_EXECUTION
 
-precisamos do restante do log, especialmente:
+WORKFLOW_SUCCESS
+        ⇏
+CLAIM-SCOPED VERIFIED
 
-Run <comando>
-...
-output
-...
-Process completed with exit code 0
 
-e, para o claim completo de supply chain:
 
-BUILD
-    ↓
-IMAGE DIGEST
-    ↓
-SBOM
-    ↓
-SLSA PROVENANCE
-    ↓
-COSIGN
-    ↓
-REKOR
-    ↓
-OPA
-    ↓
-DEP
-    ↓
-LEDGER
-    ↓
-INDEPENDENT VERIFICATION
+TRIGGER_EVENT
+      ↓
+event.workflow_run.id
+      ↓
+EXACT RUN RESOLUTION
+      ↓
+GET /actions/runs/{workflow_run_id}
+      ↓
+run.id === event.workflow_run.id
+      ↓
+RUN_IDENTITY_VALID
+      ↓
+E3
 
-Portanto, sim: este material consolida o ambiente real da execução. Ele não deve ser classificado como mera configuração. Mas também não deve ser promovido além do que efetivamente observa.
 
-A fórmula correta continua sendo:
+ACTOR
++
+TRIGGER_EVENT
++
+WORKFLOW_ID
++
+WORKFLOW_RUN_ID
++
+RUN_ATTEMPT
++
+REPOSITORY
++
+HEAD_SHA
++
+TEMPORAL_BINDING
++
+OBSERVABLE_RUN_METADATA
 
-RUNNER IMAGE MANIFEST + RUN LOG → EXECUTION ENVIRONMENT EVIDENCE
 
-e não:
 
-RUNNER IMAGE MANIFEST → VERIFIED BUILD/SUPPLY-CHAIN CLAIM.
-[18/09, 17:35] Francisco: EXECUTION_CONTEXT
-│
-├── EXECUTION_IDENTITY
-│   ├── GITHUB_RUN_ID
-│   ├── GITHUB_RUN_NUMBER
-│   └── GITHUB_RUN_ATTEMPT
-│
-├── SOURCE_IDENTITY
-│   ├── GITHUB_REPOSITORY
-│   ├── GITHUB_SHA
-│   ├── GITHUB_REF
-│   └── GITHUB_WORKFLOW_SHA
-│
-├── WORKFLOW_IDENTITY
-│   ├── GITHUB_WORKFLOW
-│   ├── GITHUB_WORKFLOW_REF
-│   ├── GITHUB_EVENT_NAME
-│   └── GITHUB_JOB
-│
-├── TEMPORAL_IDENTITY
-│   ├── run start
-│   ├── run completion
-│   └── event/commit timestamps
-│
-├── RUNNER_IDENTITY
-│   ├── runner version
-│   ├── runner environment
-│   └── runner instance metadata
-│
-├── IMAGE_IDENTITY
-│   ├── ImageOS
-│   └── ImageVersion
-│
-├── SYSTEM_IDENTITY
-│   ├── RUNNER_OS
-│   ├── RUNNER_ARCH
-│   └── kernel
-│
-└── RUNTIME_OBSERVATION
-├── node -v
-├── NODE_OPTIONS
-└── actually invoked tools
+E3
+ ↓
+JOB EXECUTED
+ ↓
+API REQUEST OBSERVED
+ ↓
+API RESPONSE OBSERVED
+ ↓
+REQUEST/RESPONSE BINDING
+ ↓
+E4
+
+
+
+WORKFLOW_TRIGGERED
+        ⇏
+CONCRETE_API_EXECUTION
+
+
+
+
+WORKFLOW_EXECUTED
+        ⇏
+API_EXECUTED
+
+
+WORKFLOW RUN
+      ↓
+STEP/JOB RELEVANT TO API
+      ↓
+CONCRETE REQUEST
+      ↓
+REQUEST ID / EXECUTION ID
+      ↓
+OBSERVED RESPONSE
+      ↓
+TEMPORAL + OBJECT + EXECUTION BINDING
+      ↓
+E4
+
+
+
+E3 ∧ E4 ∧ E5 ∧ E6 ∧ POLICY
+        ↓
+E7 — CLAIM-SCOPED VERIFIED
+
+
+
+cyrillofrancisco30-lgtm
+        ↓
+TRIGGER
+        ↓
+RUN-X
+        ↓
+E3
+
+
+
+
+FROZEN — XA-TRUST TRIGGER NON-DERIVABILITY
+
+TRIGGER
+        ⇏
+EXECUTION RESULT
+
+EXECUTION
+        ⇏
+SEMANTIC SUCCESS
+
+SUCCESS
+        ⇏
+CLAIM-SCOPED VERIFIED
+
+CLAIM-SCOPED VERIFIED
+        ⇏
+GLOBAL VERIFIED
+
+
+
+RUN-X
+ ↓
+TEST PASSED
+ ↓
+DEPLOYMENT SUCCEEDED
+ ↓
+API EXECUTED
+ ↓
+OPERATIONAL_VERIFICATION
+
+
+disparar workflow 
