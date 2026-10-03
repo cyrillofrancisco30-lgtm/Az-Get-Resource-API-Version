@@ -1,3 +1,39 @@
+TRIGGER
+  ≠
+EXECUTION
+  ≠
+RESULT
+  ≠
+BINDING
+  ≠
+INDEPENDENT VERIFICATION
+  ≠
+CLAIM
+  ≠
+GLOBAL STATE
+
+
+E7 LOCAL CLAIM SET
+        ↓
+DEFINED GLOBAL SCOPE
+        ↓
+COVERAGE / COMPLETENESS
+        ↓
+DECLARED GLOBAL
+        ↓
+INDEPENDENT RECONSTRUCTION
+        ↓
+RECALCULATED GLOBAL
+        ↓
+EXACT MATCH
+        ↓
+INDEPENDENT GLOBAL VERIFICATION
+        ↓
+GLOBAL PROMOTION POLICY
+        ↓
+E8
+
+
 cyrillofrancisco30-lgtm
         ⇏
 WORKFLOW_SUCCESS
@@ -22,6 +58,8 @@ CLAIM-SCOPED VERIFIED
         ⇏
 GLOBAL_VERIFIED
 
+
+disparar workflow 
 
 WORKFLOW: "Step 0, Start"
         │
