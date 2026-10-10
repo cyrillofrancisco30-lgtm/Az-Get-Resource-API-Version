@@ -1,3 +1,47 @@
+Correto. `gh workflow run` é o comando oficial para disparar um evento `workflow_dispatch`. Mas a documentação comprova a capacidade do CLI, não uma execução no seu repositório.
+
+Para disparar o workflow real no repositório `cyrillofrancisco30-lgtm/Az-Get-Resource-API-Version`, execute:
+
+```bash
+REPO="cyrillofrancisco30-lgtm/Az-Get-Resource-API-Version"
+
+gh auth status
+gh workflow list --repo "$REPO"
+```
+
+Identifique o nome ou arquivo real do workflow e dispare-o:
+
+```bash
+gh workflow run NOME_REAL.yml \
+  --repo "$REPO" \
+  --ref main
+```
+
+Em seguida, obtenha a execução criada:
+
+```bash
+gh run list --repo "$REPO" --limit 10
+```
+
+Com o ID real retornado, consulte os dados necessários para a cadeia XA-TRUST:
+
+```bash
+RUN_ID="ID_REAL_DA_EXECUCAO"
+
+gh api "repos/$REPO/actions/runs/$RUN_ID"
+gh api "repos/$REPO/actions/runs/$RUN_ID/jobs"
+gh api "repos/$REPO/actions/runs/$RUN_ID/logs" > run-logs.zip
+```
+
+Condição importante: o workflow precisa aceitar `workflow_dispatch` na branch padrão, e sua conta precisa ter permissão de escrita para dispará-lo.
+
+Não consigo enviar o comando ao GitHub diretamente nesta conversa, pois não disponho de uma ação autorizada de disparo. Portanto, não vou inventar um `RUN_ID` nem declarar que houve execução.
+
+A evidência começa com a resposta real da execução: `run_id`, `run_attempt`, `head_sha`, `event`, `status` e `conclusion`. Os jobs e logs permitem avançar na análise; a conclusão `success`, isoladamente, não comprova E7 nem E8.
+
+
+
+
 README.md
 │
 ├── DOCUMENTED XA-TRUST EXECUTION MODEL
