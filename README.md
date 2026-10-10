@@ -443,6 +443,36 @@ CLAIM-SCOPED VERIFIED
 
 Para manter exatamente o mesmo rigor do modelo XAI/ZDR, o GitHub deve ficar assim:
 
+
+REPO="cyrillofrancisco30-lgtm/Az-Get-Resource-API-Version"
+
+# 1. Confirmar autenticação
+gh auth status
+
+# 2. Identificar os workflows disponíveis
+gh workflow list --repo "$REPO"
+
+# 3. Disparar o workflow real (substituir pelo arquivo existente)
+gh workflow run NOME_REAL.yml --repo "$REPO" --ref main
+
+# 4. Consultar as execuções
+gh run list --repo "$REPO" --limit 10
+
+
+
+REPO="cyrillofrancisco30-lgtm/Az-Get-Resource-API-Version"
+RUN_ID="SUBSTITUIR_PELO_ID_REAL"
+
+# E3: identidade da execução
+gh api "repos/$REPO/actions/runs/$RUN_ID"
+
+# E4: jobs e etapas observáveis
+gh api "repos/$REPO/actions/runs/$RUN_ID/jobs"
+
+# Logs observados
+gh run view "$RUN_ID" --repo "$REPO" --log
+
+
 FROZEN — GITHUB WORKFLOW EXECUTION EVIDENCE
 
 workflow_run
