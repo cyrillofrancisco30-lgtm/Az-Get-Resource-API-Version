@@ -1,3 +1,9 @@
+REPO="cyrillofrancisco30-lgtm/Az-Get-Resource-API-Version"
+
+gh auth status
+gh workflow list --repo "$REPO"
+gh run list --repo "$REPO" --limit 10
+
 Correto. `gh workflow run` é o comando oficial para disparar um evento `workflow_dispatch`. Mas a documentação comprova a capacidade do CLI, não uma execução no seu repositório.
 
 Para disparar o workflow real no repositório `cyrillofrancisco30-lgtm/Az-Get-Resource-API-Version`, execute:
